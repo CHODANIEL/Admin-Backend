@@ -7,10 +7,14 @@ const authRoutes = require('./routes/auth');
 // const roomRoutes = require('./routes/rooms'); // <- 이 줄을 삭제하거나 주석 처리
 const accommodationRoutes = require('./routes/accommodations');
 const partnerRoutes = require('./routes/partners');
+const categoryRoutes = require('./routes/categories');
+const userRoutes = require('./routes/users');
+const bookingRoutes = require('./routes/bookings');
+const reviewRoutes = require('./routes/reviews');
+const adminRoutes = require('./routes/admins');
+const uploadRoutes = require('./routes/upload');
+const promotionRoutes = require('./routes/promotions');
 
-// (나중에 추가할 다른 라우터들...)
-// const partnerRoutes = require('./routes/partners'); 
-// const userRoutes = require('./routes/users');
 
 // DB 연결 실행
 connectDB();
@@ -25,9 +29,15 @@ app.use('/api/auth', authRoutes);
 // app.use('/api/rooms', roomRoutes); // <- 이 줄을 삭제하거나 주석 처리
 app.use('/api/accommodations', accommodationRoutes); // <- 이 줄을 추가
 app.use('/api/partners', partnerRoutes);
-// (나중에 추가할 다른 라우터들...)
-// app.use('/api/partners', partnerRoutes);
-// app.use('/api/users', userRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/admins', adminRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/promotions', promotionRoutes);
+
+
 
 
 const PORT = process.env.PORT || 3000;
