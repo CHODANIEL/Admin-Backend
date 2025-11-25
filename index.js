@@ -1,43 +1,55 @@
-require('dotenv').config();
-const express = require('express');
-const connectDB = require('./config/db'); // DB 연결 함수 불러오기
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { connectDB } from './config/db.js';
 
-// --- 1. 라우터 파일 불러오기 ---
-const authRoutes = require('./routes/auth');
-const businessRoutes = require('./routes/businesses'); // (수정됨: partners -> businesses)
-const lodgingRoutes = require('./routes/lodgings');    // (수정됨: bookings가 아니라 lodgings 파일을 불러와야 함)
-const categoryRoutes = require('./routes/categories');
-const userRoutes = require('./routes/users');
-const bookingRoutes = require('./routes/bookings');
-const reviewRoutes = require('./routes/reviews');
-const adminRoutes = require('./routes/admins');
-const uploadRoutes = require('./routes/upload');
-const promotionRoutes = require('./routes/promotions');
-const roomRoutes = require('./routes/rooms');
+// 공통 응답 포맷 (테스트용)
+import { successResponse, errorResponse } from './common/response.js';
 
-// DB 연결 실행
+// === 라우트 파일 불러오기 ===
+import authRoutes from './auth/route.js';
+import businessRoutes from './business/route.js';
+import userRoutes from './user/route.js';
+import lodgingRoutes from './lodging/route.js';
+import roomRoutes from './room/route.js';
+import bookingRoutes from './booking/route.js';
+import reviewRoutes from './review/route.js';
+import categoryRoutes from './category/route.js';
+import promotionRoutes from './promotion/route.js';
+import dashboardRoutes from './dashboard/route.js';
+
+dotenv.config();
 connectDB();
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-// JSON 파싱 미들웨어
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// --- 2. API 라우터 등록 ---
+// === API 연결 ===
 app.use('/api/auth', authRoutes);
-app.use('/api/businesses', businessRoutes); // (수정됨: 오타 businesss -> businesses)
-app.use('/api/lodgings', lodgingRoutes);    // (수정됨: URL 대문자 L -> 소문자 l 권장)
-app.use('/api/categories', categoryRoutes);
+app.use('/api/businesses', businessRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/lodgings', lodgingRoutes);
+app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/reviews', reviewRoutes);
-app.use('/api/admins', adminRoutes);
-app.use('/api/upload', uploadRoutes);
+app.use('/api/categories', categoryRoutes);
 app.use('/api/promotions', promotionRoutes);
-app.use('/api/rooms', roomRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
-const PORT = process.env.PORT || 3000;
+// 기본 경로
+app.get('/', (req, res) => {
+    res.json(successResponse(null, "Admin Backend Server is Running! 🚀"));
+});
+
+// 404 에러 처리
+app.use((req, res, next) => {
+    res.status(404).json(errorResponse("API 경로를 찾을 수 없습니다.", 404));
+});
 
 app.listen(PORT, () => {
-    console.log(`✅ 서버가 ${PORT}번 포트에서 실행 중입니다.`);
+    console.log(`🚀 Server is running on port ${PORT}`);
 });

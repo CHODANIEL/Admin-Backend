@@ -1,21 +1,13 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
-// .env 파일에서 MONGODB_URI 환경 변수를 가져옵니다.
-const dbURI = process.env.MONGODB_URI;
-
-const connectDB = async () => {
+export const connectDB = async () => {
     try {
-        // Mongoose로 MongoDB에 연결 시도
-        await mongoose.connect(dbURI);
+        // [수정] .env 파일에 적힌 이름(MONGODB_URI) 그대로 사용
+        const conn = await mongoose.connect(process.env.MONGODB_URI);
 
-        console.log('✅ MongoDB가 성공적으로 연결되었습니다.');
-
+        console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
     } catch (err) {
-        console.error('❌ MongoDB 연결 실패:', err.message);
-
-        // 연결 실패 시 서버 프로세스 종료
-        process.exit(1);
+        console.error(`❌ MongoDB Connection Failed: ${err.message}`);
+        process.exit(1); // 연결 실패 시 서버 종료
     }
 };
-
-module.exports = connectDB;
